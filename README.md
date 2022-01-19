@@ -74,3 +74,58 @@ we need also to set a minimum date
 
 ![Capture d’écran 2022-01-19 105000](https://user-images.githubusercontent.com/85891554/150106494-7d6f89fe-5029-421e-a781-1358315ec68d.png)
 
+# Add task function
+first we add a slot to our header
+```cpp
+private slots :
+  void on_action_Add_triggered();
+```
+now the implementation of our function :
+```cpp
+     //first we call the task dialog
+     addTaskDialog dialog;
+     auto reply= dialog.exec();
+     if(reply == addTaskDialog::Accepted)
+     {
+         //we save the task on a text string using the gettext function
+         QString text= dialog.getText();
+         // now based on the date and the checkbox status we will decide on wich listwidget we are going to add our task as an item
+         if(dialog.getDate()==QDate::currentDate() && !dialog.isChecked()){
+             ui->listWidget->addItem(text);
+         }else if(dialog.getDate()!=QDate::currentDate() && !dialog.isChecked()){
+             ui->lw2->addItem(text);
+         }else if(dialog.isChecked()){
+             ui->lw3->addItem(text);
+         }
+     }
+```
+# hide/show the pending and finished views
+The user could either hide/show the pending and finished views
+for this we add the following slots to the header
+```cpp
+private slots:
+    void on_action_View_pending_tasks_toggled(bool arg1);
+    void on_action_View_finished_tasks_toggled(bool arg1);
+```
+the implementation of on_action_View_pending_tasks_toggled slot
+```cpp
+void ToDoApp::on_action_View_pending_tasks_toggled(bool arg1)
+{
+    if(arg1){
+        ui->lw2->setVisible(true);
+    }else{
+        ui->lw2->setVisible(false);
+    }
+}
+```
+the implementation of on_action_View_finished_tasks_toggled slot
+```cpp
+void ToDoApp::on_action_View_finished_tasks_toggled(bool arg1)
+{
+    if(arg1){
+        ui->lw3->setVisible(true);
+    }else{
+        ui->lw3->setVisible(false);
+    }
+}
+```
