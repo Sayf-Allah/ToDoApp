@@ -19,7 +19,9 @@ A Task is defined by the following attributes:
 - Finally, a task should have a DueDate which stores the Date planned for the date.
 
 we used qt designer to create the dialog
+
 ![Capture d’écran 2022-01-19 104030](https://user-images.githubusercontent.com/85891554/150106482-5fe645a5-6240-4bca-bcaf-e34ac62e02b8.png)
+
 now , we will add setters and a function to gettext from the dialog
 - date setter 
 ```cpp
