@@ -131,3 +131,40 @@ void ToDoApp::on_action_View_finished_tasks_toggled(bool arg1)
     }
 }
 ```
+we need to add this code to the constructor to make sure that these widgets are invisible by default
+```cpp
+   ui->lw2->setVisible(false);
+   ui->lw3->setVisible(false);
+```
+# Save tasks
+now we neeed to add a function so we can save our tasks after closing our application
+to do this we are going to override a close event
+```cpp
+protected:
+    void closeEvent(QCloseEvent* e) override;
+```
+we are going to save the tasks on a .txt file
+```cpp
+void ToDoApp::closeEvent(QCloseEvent* e){
+    
+    QFile file("C:/Users/zakariae zaoui/Desktop/alo.txt");
+    if(file.open(QIODevice::ReadWrite | QIODevice::Text)){
+        QTextStream out(&file);
+        
+        for(int i=0;i<ui->listWidget->count();i++)
+        {
+            out << "1"<< ui->listWidget->item(i)->text() << Qt::endl;
+        }
+        for(int i=0;i<ui->lw2->count();i++)
+        {
+            out << "2"<< ui->lw2->item(i)->text() << Qt::endl;
+        }
+        for(int i=0;i<ui->lw3->count();i++)
+        {
+            out << "3"<< ui->lw3->item(i)->text() << Qt::endl;
+        }
+        file.close();
+    }
+}
+```
+# Open tasks
