@@ -1,14 +1,14 @@
 # ToDoApp
 # Table of Content  
 - [Overview](#Overview)
-- [the application interface](#the application interface)
-- [Defining a Task](#Defining a Tasks)
-- [Add task function](#Add task function)
-- [hide/show the pending and finished views](#hide/show the pending and finished views)
-- [Save tasks](#Save tasks)
-- [Open tasks](#Open tasks)
-- [Change the content of an item](#Change the content of an item)
-- [MVC model](#MVC model)
+- [the application interface](#the-application-interface)
+- [Defining a Task](#Defining-a-Tasks)
+- [Add task function](#Add-task-function)
+- [hide/show the pending and finished views](#hide/show-the-pending-and-finished-views)
+- [Save tasks](#Save-tasks)
+- [Open tasks](#Open-tasks)
+- [Change the content of an item](#Change-the-content-of-an-item)
+- [MVC model](#MVC-model)
 
   # SpreadSheet
   ## Context
