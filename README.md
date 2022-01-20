@@ -168,3 +168,129 @@ void ToDoApp::closeEvent(QCloseEvent* e){
 }
 ```
 # Open tasks
+the tasks entered to our application must remains in the app in future use
+to do this we need to add this code to the constructor 
+```cpp
+      QFile file("C:/Users/zakariae zaoui/Desktop/alo.txt");
+
+      if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+            return;
+      // by checking the first character of line we can decidde where to add this item
+      while (!file.atEnd()) {
+          QString line = file.readLine();
+          if(line.at(0)=="1"){
+                ui->listWidget->addItem(line.mid(1,line.size()));
+          }else if(line.at(0)=="2"){
+              ui->lw2->addItem(line.mid(1,line.size()));
+          }else if(line.at(0)=="3"){
+              ui->lw3   ->addItem(line.mid(1,line.size()));
+          }
+      }
+```
+# Change the content of an item
+first we need to connect the list widget to a function that will be executed if an item is double clicked
+```cpp
+      connect(ui->listWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,SLOT(sss()));
+      connect(ui->lw2, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,SLOT(sss2()));
+      connect(ui->lw3, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,SLOT(sss3()));
+```
+we have to add these three SLOTS to the header
+```cpp
+private slots:    
+    void sss();
+    void sss2();
+    void sss3();
+```
+now the implementation of the slots
+sss():
+```cpp
+void ToDoApp::sss(){
+    addTaskDialog dialog;
+    int i=1;
+    
+    QString task;
+    // declare the new task
+    QListWidgetItem *a=ui->listWidget->currentItem();
+    // now we split the task 
+    QStringList list = a->text().split(QRegularExpression("\\W+"), Qt::SkipEmptyParts);
+    task+=list[0];
+    
+    // this loop is going to store the description on a string named task
+    while(list[i]!="Due"){
+         task+=" "+list[i];
+         i++;
+    }
+    
+    // set the date
+    dialog.setdate(list[i+3].toInt(),list[i+1].toInt(),list[i+2].toInt());
+    
+    // set the description
+    dialog.setdesc(task);
+    
+    //set the tag
+    dialog.settag(list[i+5]);
+    auto reply= dialog.exec();
+    if(reply == addTaskDialog::Accepted)
+     {
+         QString text= dialog.getText();
+         if(dialog.getDate()==QDate::currentDate() && !dialog.isChecked()){
+             ui->listWidget->addItem(text);
+         }else if(dialog.getDate()!=QDate::currentDate() && !dialog.isChecked()){
+             ui->lw2->addItem(text);
+         }else if(dialog.isChecked()){
+             ui->lw3->addItem(text);
+         }
+         // delete the previous item so we won't have a duplicated one 
+         delete a ;
+     }
+}
+```
+same thing for the second slot
+the implementation of the third slot is different
+we have to change the checkbox status
+```cpp
+void ToDoApp::sss(){
+    addTaskDialog dialog;
+    int i=1;
+    
+    QString task;
+    // declare the new task
+    QListWidgetItem *a=ui->listWidget->currentItem();
+    // now we split the task 
+    QStringList list = a->text().split(QRegularExpression("\\W+"), Qt::SkipEmptyParts);
+    task+=list[0];
+    
+    // this loop is going to store the description on a string named task
+    while(list[i]!="Due"){
+         task+=" "+list[i];
+         i++;
+    }
+    
+    // set the date
+    dialog.setdate(list[i+3].toInt(),list[i+1].toInt(),list[i+2].toInt());
+    
+    // set the description
+    dialog.setdesc(task);
+    
+    //set the check box for finished tasks to true
+    dialog.setf(true);
+    
+    //set the tag
+    dialog.settag(list[i+5]);
+    auto reply= dialog.exec();
+    if(reply == addTaskDialog::Accepted)
+     {
+         QString text= dialog.getText();
+         if(dialog.getDate()==QDate::currentDate() && !dialog.isChecked()){
+             ui->listWidget->addItem(text);
+         }else if(dialog.getDate()!=QDate::currentDate() && !dialog.isChecked()){
+             ui->lw2->addItem(text);
+         }else if(dialog.isChecked()){
+             ui->lw3->addItem(text);
+         }
+         // delete the previous item so we won't have a duplicated one 
+         delete a ;
+     }
+}
+```
+now lets do a test
