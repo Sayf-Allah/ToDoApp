@@ -308,11 +308,19 @@ void ToDoApp::sss(){
 ```
 now lets do a test
 step 1: create a task
+
 ![Capture d’écran 2022-01-20 111722](https://user-images.githubusercontent.com/85891554/150321621-09b5cd87-cfe5-43e3-8b7c-9b890b832b60.png)
+
 step 2: double click on the task
+
 ![Capture d’écran 2022-01-20 111514](https://user-images.githubusercontent.com/85891554/150321651-3b559758-7f46-4054-a99b-ffe5b26fa7ba.png)
+
 step 3: change the attributes
+
 ![Capture d’écran 2022-01-20 111119](https://user-images.githubusercontent.com/85891554/150321824-b09a54bd-46c6-41c2-8121-34c741772794.png)
+
 step 4: save the changes
+
 ![Capture d’écran 2022-01-20 112701](https://user-images.githubusercontent.com/85891554/150321847-825e559e-ad11-46c8-84d0-af118dac4dd2.png)
+
 ## MVC model
