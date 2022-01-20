@@ -1,11 +1,24 @@
 # ToDoApp
-# Overview
+# Table of Content  
+- [Overview](#Overview)
+- [the application interface](#the application interface)
+- [Defining a Task](#Defining a Tasks)
+- [Add task function](#Add task function)
+- [hide/show the pending and finished views](#hide/show the pending and finished views)
+- [Save tasks](#Save tasks)
+- [Open tasks](#Open tasks)
+- [Change the content of an item](#Change the content of an item)
+- [MVC model](#MVC model)
+
+  # SpreadSheet
+  ## Context
+## Overview
 The goal of the project is to create an application to manage our tasks. It should have all the features of main application such as menues, actions and toolbar. The application must store an archive of all the pending and finished tasks.
 ![Capture d’écran 2022-01-16 153918](https://user-images.githubusercontent.com/85891554/150104132-af62f444-93e2-4fa8-a688-73cea8c5885e.png)
-# the application interface
+## the application interface
 first we are going to use Qt Designer to design our application
 ![Capture d’écran 2022-01-19 104115](https://user-images.githubusercontent.com/85891554/150106421-62b65e20-a967-4d48-bcff-3a741377d1b5.png)
-# Defining a Task
+## Defining a Task
 now we need to create a dialog on wich we are going to define the tasks
 A Task is defined by the following attributes:
 - A description: stating the text and goal for the task like (Buying the milk).
@@ -76,7 +89,7 @@ we need also to set a minimum date
 
 ![Capture d’écran 2022-01-19 105000](https://user-images.githubusercontent.com/85891554/150106494-7d6f89fe-5029-421e-a781-1358315ec68d.png)
 
-# Add task function
+## Add task function
 first we add a slot to our header
 ```cpp
 private slots :
@@ -101,7 +114,7 @@ now the implementation of our function :
          }
      }
 ```
-# hide/show the pending and finished views
+## hide/show the pending and finished views
 The user could either hide/show the pending and finished views
 for this we add the following slots to the header
 ```cpp
@@ -136,7 +149,7 @@ we need to add this code to the constructor to make sure that these widgets are 
    ui->lw2->setVisible(false);
    ui->lw3->setVisible(false);
 ```
-# Save tasks
+## Save tasks
 now we neeed to add a function so we can save our tasks after closing our application
 to do this we are going to override a close event
 ```cpp
@@ -167,7 +180,7 @@ void ToDoApp::closeEvent(QCloseEvent* e){
     }
 }
 ```
-# Open tasks
+## Open tasks
 the tasks entered to our application must remains in the app in future use
 to do this we need to add this code to the constructor 
 ```cpp
@@ -187,7 +200,7 @@ to do this we need to add this code to the constructor
           }
       }
 ```
-# Change the content of an item
+## Change the content of an item
 first we need to connect the list widget to a function that will be executed if an item is double clicked
 ```cpp
       connect(ui->listWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,SLOT(sss()));
@@ -294,3 +307,12 @@ void ToDoApp::sss(){
 }
 ```
 now lets do a test
+step 1: create a task
+![Capture d’écran 2022-01-20 111722](https://user-images.githubusercontent.com/85891554/150321621-09b5cd87-cfe5-43e3-8b7c-9b890b832b60.png)
+step 2: double click on the task
+![Capture d’écran 2022-01-20 111514](https://user-images.githubusercontent.com/85891554/150321651-3b559758-7f46-4054-a99b-ffe5b26fa7ba.png)
+step 3: change the attributes
+![Capture d’écran 2022-01-20 111119](https://user-images.githubusercontent.com/85891554/150321824-b09a54bd-46c6-41c2-8121-34c741772794.png)
+step 4: save the changes
+![Capture d’écran 2022-01-20 112701](https://user-images.githubusercontent.com/85891554/150321847-825e559e-ad11-46c8-84d0-af118dac4dd2.png)
+## MVC model
