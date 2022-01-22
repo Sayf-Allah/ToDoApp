@@ -655,6 +655,7 @@ we drag from todaystask to pending task
 
 make some changes
 
-![Capture d’écran 2022-01-22 174256](https://user-images.githubusercontent.com/85891554/150649167-e9c9343d-bba7-43e6-972b-0b5b220562f2.png)
+![Capture d’écran 2022-01-22 182816](https://user-images.githubusercontent.com/85891554/150650997-cb0bef8b-9a0d-4020-9629-143b5f3c363b.png)
+
 
 # THE END
