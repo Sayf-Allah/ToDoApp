@@ -9,9 +9,8 @@
 - [Open tasks](#Open-tasks)
 - [Change the content of an item](#Change-the-content-of-an-item)
 - [MVC model](#MVC-model)
+- [THE END](#THE-END)
 
-  # SpreadSheet
-  ## Context
 ## Overview
 The goal of the project is to create an application to manage our tasks. It should have all the features of main application such as menues, actions and toolbar. The application must store an archive of all the pending and finished tasks.
 ![Capture d’écran 2022-01-16 153918](https://user-images.githubusercontent.com/85891554/150104132-af62f444-93e2-4fa8-a688-73cea8c5885e.png)
@@ -324,3 +323,332 @@ step 4: save the changes
 ![Capture d’écran 2022-01-20 112701](https://user-images.githubusercontent.com/85891554/150321847-825e559e-ad11-46c8-84d0-af118dac4dd2.png)
 
 ## MVC model
+
+now lets make another version of the ToDoApp but now using models
+
+- with the qt designer we are going to create a form using QListView
+
+![Capture d’écran 2022-01-22 174256](https://user-images.githubusercontent.com/85891554/150647688-dd1429da-0964-4ff2-872b-5183f7604bdc.png)
+- now we need to create models we are going to use QStringModel
+  - first we need to add this code to the header
+  ```cpp
+    QStringListModel *model1;
+    QStringListModel *model2;
+    QStringListModel *model3;
+    
+    QStringList Todaytasks;
+    QStringList Finishedtasks;
+    QStringList Pendingtasks;
+  ```
+  - ```cpp
+    model1 = new QStringListModel();
+    model2 = new QStringListModel();
+    model3 = new QStringListModel();
+    ```
+  - then we have to set the model to the view
+  ```cpp
+     model1->setStringList(Todaytasks);
+     ui->lw1->setModel(model1);
+
+
+     model2->setStringList(Pendingtasks);
+     ui->lw2->setModel(model2);
+
+
+     model3->setStringList(Finishedtasks);
+     ui->lw3->setModel(model3);
+  ```
+ - the addaction function
+ ```cpp
+ void ToDoApp::on_action_Add_triggered()
+ {
+     addTaskDialog dialog;
+     auto reply= dialog.exec();
+     if(reply == addTaskDialog::Accepted)
+     {
+         QString text= dialog.getText();
+         if(dialog.getDate()==QDate::currentDate() && !dialog.isChecked()){
+             Todaytasks.append(text);
+         }else if(dialog.getDate()!=QDate::currentDate() && !dialog.isChecked()){
+             Pendingtasks.append(text);
+         }else if(dialog.isChecked()){
+             Finishedtasks.append(text);
+         }
+     }
+
+     model1->setStringList(Todaytasks);
+     ui->lw1->setModel(model1);
+
+     model2->setStringList(Pendingtasks);
+     ui->lw2->setModel(model2);
+
+
+     model3->setStringList(Finishedtasks);
+     ui->lw3->setModel(model3);
+ }
+ ```
+ - now the implementation of the new open and save function
+   - Save :
+   ```cpp
+   void ToDoApp::closeEvent(QCloseEvent* e){
+    QFile file("C:/Users/zakariae zaoui/Desktop/alo.txt");
+    if(file.open(QIODevice::ReadWrite | QIODevice::Text)){
+        QTextStream out(&file);
+        for(int i=0;i<Todaytasks.size();i++)
+        {
+            out << "1"<< Todaytasks.at(i)<< Qt::endl;
+        }
+        for(int i=0;i<Pendingtasks.size();i++)
+        {
+            out << "2"<< Pendingtasks.at(i) << Qt::endl;
+        }
+        for(int i=0;i<Finishedtasks.size();i++)
+        {
+            out << "3"<< Finishedtasks.at(i) << Qt::endl;
+        }
+        file.close();
+    }
+   }
+   ```
+   - open :
+     - we are going to add this to the constructor
+   
+   ```cpp
+      QFile file("C:/Users/zakariae zaoui/Desktop/alo.txt");
+
+      if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+            return;
+
+      while (!file.atEnd()) {
+          QString line = file.readLine();
+          if(line.at(0)=="1"){
+                Todaytasks.append(line.mid(1,line.size()));
+          }else if(line.at(0)=="2"){
+              Pendingtasks.append(line.mid(1,line.size()));
+          }else if(line.at(0)=="3"){
+              Finishedtasks.append(line.mid(1,line.size()));
+          }
+      }
+      
+      model1->setStringList(Todaytasks);
+      ui->lw1->setModel(model1);
+
+      model2->setStringList(Pendingtasks);
+      ui->lw2->setModel(model2);
+
+      model3->setStringList(Finishedtasks);
+      ui->lw3->setModel(model3);
+   ```
+ - change content of a task
+   - first we need to connect the lists to the Slots that are going to perform these actions
+   ```cpp
+      connect(ui->lw1, SIGNAL(doubleClicked(QModelIndex)), this,SLOT(sss()));
+      connect(ui->lw2, SIGNAL(doubleClicked(QModelIndex)), this,SLOT(sss2()));
+      connect(ui->lw3, SIGNAL(doubleClicked(QModelIndex)), this,SLOT(sss3()));
+   ```
+   - the implementation of sss()
+   ```cpp
+   void ToDoApp::sss(){
+    addTaskDialog dialog;
+    int i=1;
+    QString task;
+    QModelIndex index=ui->lw1->currentIndex();
+    QString a=Todaytasks.at(index.row());
+    QStringList list = a.split(QRegularExpression("\\W+"), Qt::SkipEmptyParts);
+    task+=list[0];
+
+    while(list[i]!="Due"){
+         task+=" "+list[i];
+         i++;
+    }
+
+    dialog.setdate(list[i+3].toInt(),list[i+1].toInt(),list[i+2].toInt());
+    dialog.setdesc(task);
+    dialog.settag(list[i+5]);
+    auto reply= dialog.exec();
+
+
+     if(reply == addTaskDialog::Accepted)
+     {
+         QString text= dialog.getText();
+         if(dialog.getDate()==QDate::currentDate() && !dialog.isChecked()){
+             Todaytasks.append(text);
+             Todaytasks.removeAt(index.row());
+
+         }else if(dialog.getDate()!=QDate::currentDate() && !dialog.isChecked()){
+             Pendingtasks.append(text);
+             Todaytasks.removeAt(index.row());
+         }else if(dialog.isChecked()){
+             Finishedtasks.append(text);
+             Todaytasks.removeAt(index.row());
+         }
+
+     }
+
+     model1->setStringList(Todaytasks);
+     ui->lw1->setModel(model1);
+
+     model2->setStringList(Pendingtasks);
+     ui->lw2->setModel(model2);
+
+
+     model3->setStringList(Finishedtasks);
+     ui->lw3->setModel(model3);
+
+   } 
+   ```
+   - the implementation of sss2()
+   ```cpp
+   void ToDoApp::sss2 (){
+    addTaskDialog dialog;
+    int i=1;
+    QString task;
+    QModelIndex index=ui->lw2->currentIndex();
+    QString a=Pendingtasks.at(index.row());
+    QStringList list = a.split(QRegularExpression("\\W+"), Qt::SkipEmptyParts);
+    task+=list[0];
+    while(list[i]!="Due"){
+         task+=" "+list[i];
+         i++;
+    }
+    dialog.setdate(list[i+3].toInt(),list[i+1].toInt(),list[i+2].toInt());
+    dialog.setdesc(task);
+    dialog.settag(list[i+5]);
+    auto reply= dialog.exec();
+    if(reply == addTaskDialog::Accepted){
+         QString text= dialog.getText();
+         if(dialog.getDate()==QDate::currentDate() && !dialog.isChecked()){
+             Todaytasks.append(text);
+             Pendingtasks.removeAt(index.row());
+         }else if(dialog.getDate()!=QDate::currentDate() && !dialog.isChecked()){
+             Pendingtasks.append(text);
+   Pendingtasks.removeAt(index.row());
+         }else if(dialog.isChecked()){
+             Finishedtasks.append(text);
+             Pendingtasks.removeAt(index.row());
+         }
+
+
+    }
+
+    model1->setStringList(Todaytasks);
+    ui->lw1->setModel(model1);
+
+    model2->setStringList(Pendingtasks);
+    ui->lw2->setModel(model2);
+
+
+    model3->setStringList(Finishedtasks);
+    ui->lw3->setModel(model3);
+    }
+   ```
+   - the implementation of sss3()
+   ```cpp
+    void ToDoApp::sss3(){
+    addTaskDialog dialog;
+    int i=1;
+    QString task;
+    QModelIndex index=ui->lw3->currentIndex();
+    QString a=Finishedtasks.at(index.row());
+    QStringList list = a.split(QRegularExpression("\\W+"), Qt::SkipEmptyParts);
+    task+=list[0];
+    while(list[i]!="Due"){
+         task+=" "+list[i];
+         i++;
+    }
+    dialog.setdate(list[i+3].toInt(),list[i+1].toInt(),list[i+2].toInt());
+    dialog.setdesc(task);
+    dialog.setf(true);
+    dialog.settag(list[i+5]);
+    auto reply= dialog.exec();
+    if(reply == addTaskDialog::Accepted){
+         QString text= dialog.getText();
+         if(dialog.getDate()==QDate::currentDate() && !dialog.isChecked()){
+             Todaytasks.append(text);
+              Finishedtasks.removeAt(index.row());
+         }else if(dialog.getDate()!=QDate::currentDate() && !dialog.isChecked()){
+             Pendingtasks.append(text);
+              Finishedtasks.removeAt(index.row());
+         }else if(dialog.isChecked()){
+
+         }
+
+    }
+
+    model1->setStringList(Todaytasks);
+    ui->lw1->setModel(model1);
+
+    model2->setStringList(Pendingtasks);
+    ui->lw2->setModel(model2);
+
+    model3->setStringList(Finishedtasks);
+    ui->lw3->setModel(model3);
+    }
+   ```
+## Drag and Drop
+first we need to set the drag and drop mode
+```cpp
+      ui->lw2->setDragDropMode(QAbstractItemView::DragDrop);
+      ui->lw1->setDragDropMode(QAbstractItemView::DragDrop);
+      ui->lw3->setDragDropMode(QAbstractItemView::DropOnly);
+```
+we have to make some changes if we drag a task from todays tasks to pending tasks
+> and by default we need to add a day
+
+```cpp
+connect(model2, SIGNAL(rowsInserted(QModelIndex,int,int)), this,SLOT(drop1()));
+```
+```cpp
+void ToDoApp::drop1(){
+
+    addTaskDialog dialog;
+    int i=1;
+    QString task;
+    QModelIndex index=ui->lw1->currentIndex();
+    QString a=Todaytasks.at(index.row());
+    QStringList list = a.split(QRegularExpression("\\W+"), Qt::SkipEmptyParts);
+    task+=list[0];
+    while(list[i]!="Due"){
+         task+=" "+list[i];
+         i++;
+    }
+    dialog.setdate(list[i+3].toInt(),list[i+1].toInt(),list[i+2].toInt()+1);
+    dialog.setdesc(task);
+    dialog.settag(list[i+5]);
+    auto reply= dialog.exec();
+    if(reply == addTaskDialog::Accepted){
+         QString text= dialog.getText();
+         if(dialog.getDate()==QDate::currentDate() && !dialog.isChecked()){
+
+         }else if(dialog.getDate()!=QDate::currentDate() && !dialog.isChecked()){
+             Pendingtasks.append(text);
+             Todaytasks.removeAt(index.row());
+         }else if(dialog.isChecked()){
+             Finishedtasks.append(text);
+             Todaytasks.removeAt(index.row());
+         }
+    }
+
+    ui->lw2->clearSelection();
+    model1->setStringList(Todaytasks);
+    ui->lw1->setModel(model1);
+
+    model2->setStringList(Pendingtasks);
+    ui->lw2->setModel(model2);
+
+
+    model3->setStringList(Finishedtasks);
+    ui->lw3->setModel(model3);
+}
+```
+let's test it now
+
+we drag from todaystask to pending task
+
+![Capture d’écran 2022-01-22 182749](https://user-images.githubusercontent.com/85891554/150649164-d2122718-3122-465c-ad9e-613dad2459c5.png)
+
+make some changes
+
+![Capture d’écran 2022-01-22 174256](https://user-images.githubusercontent.com/85891554/150649167-e9c9343d-bba7-43e6-972b-0b5b220562f2.png)
+
+# THE END
