@@ -9,6 +9,7 @@
 - [Open tasks](#Open-tasks)
 - [Change the content of an item](#Change-the-content-of-an-item)
 - [MVC model](#MVC-model)
+- [Drag and Drop](Drag-and-Drop)
 - [THE END](#THE-END)
 
 ## Overview
