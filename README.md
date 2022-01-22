@@ -14,10 +14,15 @@
 
 ## Overview
 The goal of the project is to create an application to manage our tasks. It should have all the features of main application such as menues, actions and toolbar. The application must store an archive of all the pending and finished tasks.
+
 ![Capture d’écran 2022-01-16 153918](https://user-images.githubusercontent.com/85891554/150104132-af62f444-93e2-4fa8-a688-73cea8c5885e.png)
+
 ## the application interface
+
 first we are going to use Qt Designer to design our application
+
 ![Capture d’écran 2022-01-19 104115](https://user-images.githubusercontent.com/85891554/150106421-62b65e20-a967-4d48-bcff-3a741377d1b5.png)
+
 ## Defining a Task
 now we need to create a dialog on wich we are going to define the tasks
 A Task is defined by the following attributes:
